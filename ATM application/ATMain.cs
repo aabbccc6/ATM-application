@@ -26,7 +26,7 @@ namespace Normal
         }
         static void ATMain()
         {
-            Console.WriteLine( "Welcome to ATM System Alpha Build v0.02" );
+            Console.WriteLine( "Welcome to ATM System Alpha Build v0.04" );
             Thread.Sleep( 50 );
             Console.WriteLine( "1.Sign in 2.Sign up" );
 incorrect:
