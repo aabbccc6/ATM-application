@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Threading;
+using ATM_account;
 
 namespace Normal
 {
     class ATM
     {
-        static string username;
-        static string password;
-        static string new_user;
-        static string new_password;
-        static int balance = 0;
+        static Account g_account;
+        int[] arr = new int[6] ;
+        static Account[] arrAccount = new Account[ 10 ];
         static int add( int a , int b )
         {
             int c = a + b;
@@ -26,7 +25,7 @@ namespace Normal
         }
         static void ATMain()
         {
-            Console.WriteLine( "Welcome to ATM System Alpha Build v0.04" );
+            Console.WriteLine( "Welcome to ATM System Alpha Build v0.08" );
             Thread.Sleep( 50 );
             Console.WriteLine( "1.Sign in 2.Sign up" );
 incorrect:
@@ -54,6 +53,8 @@ incorrect:
                 ATMain();
             }
         }
+        static string username;
+        static string password;
         static void SignIn()
         {
             Console.WriteLine( "Enter your account" );
@@ -66,7 +67,7 @@ incorrect:
         {
             Console.WriteLine( "Authorizing..." );
             Thread.Sleep( 1000 );
-            if ( username == new_user && password == new_password )
+            if ( username == g_account.username && password == g_account.password )
             {
                 Console.WriteLine( "Authorize confirmed! welcome back, user." );
                 Thread.Sleep( 50 );
@@ -92,11 +93,11 @@ incorrect:
         static void SignUp()
         {
             Console.WriteLine( "Enter your new account" );
-            new_user = Console.ReadLine();
+            g_account.username = Console.ReadLine();
             Console.WriteLine( "Enter your new password" );
-            new_password = Console.ReadLine();
+            g_account.password = Console.ReadLine();
             Console.WriteLine( "Signing up..." );
-            balance = 0;
+            g_account.balance = 0;
             Thread.Sleep( 1000 );
             Console.WriteLine( "Complete, now return to main menu..." );
             Thread.Sleep( 50 );
@@ -168,7 +169,7 @@ incorrect:
                 Thread.Sleep( 1000 );
                 Console.WriteLine( "Please wait,validating bill" );
                 Thread.Sleep( 1000 );
-                balance = add( plus , balance );
+                g_account.balance = add( plus , g_account.balance );
                 Console.WriteLine( "Success, now returning..." );
             }
             else
@@ -210,19 +211,19 @@ incorrect:
                 switch ( choice )
                 {
                     case 1:
-                        balance = nagative( balance , 100 );
+                        g_account.balance = nagative( g_account.balance , 100 );
                         Withdraw();
                         break;
                     case 2:
-                        balance = nagative( balance , 300 );
+                        g_account.balance = nagative( g_account.balance , 300 );
                         Withdraw();
                         break;
                     case 3:
-                        balance = nagative( balance , 500 );
+                        g_account.balance = nagative( g_account.balance , 500 );
                         Withdraw();
                         break;
                     case 4:
-                        balance = nagative( balance , 800 );
+                        g_account.balance = nagative( g_account.balance , 800 );
                         Withdraw();
                         break;
                     default:
@@ -315,11 +316,11 @@ incorrect:
         }
         static void n_balance()
         {
-            Console.WriteLine( "Your account balance is {0}" , balance );
+            Console.WriteLine( "Your account balance is {0}" , g_account.balance );
         }
         static void alarm()
         {
-            if ( balance < 0 )
+            if ( g_account.balance < 0 )
                 Console.WriteLine( "Your account balance is lower than 0!!!please return it later." );
         }
     }
