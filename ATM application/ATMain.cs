@@ -149,9 +149,9 @@ incorrect:
         }
         static void MainMenu()
         {
-            sync();
-            n_balance();
-            alarm();
+            Sync();
+            N_Balance();
+            Alarm();
             Console.WriteLine( "Please choose one you wanna do:" );
             Thread.Sleep( 50 );
             Console.WriteLine( "1.Deposit" );
@@ -373,16 +373,16 @@ incorrect:
             Thread.Sleep( 50 );
             ATMain();
         }
-        static void n_balance()
+        static void N_Balance()
         {
             Console.WriteLine( "Your account balance is {0}" , CurrentUser.balance );
         }
-        static void alarm()
+        static void Alarm()
         {
             if ( CurrentUser.balance < 0 )
                 Console.WriteLine( "Your account balance is lower than 0!!!please return it later." );
         }
-        static void sync()
+        static void Sync()
         {
             lstAccount[ CurrentUserID ] = CurrentUser;
             lstAccount[ ToUserID ] = ToUser;
