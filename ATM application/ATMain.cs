@@ -20,7 +20,7 @@ namespace Normal
             AccountInit();
             ATMain();
         }
-        private static void AccountInit()
+        static void AccountInit()
         {
             Account a1 = new Account();
             a1.username = "aabbccc6";
@@ -101,7 +101,7 @@ incorrect:
         }
         static bool IsExist( string username )
         {
-            for (int index = 0 ; index < lstAccount.Count ; index++ )
+            for ( int index = 0 ; index < lstAccount.Count ; index++ )
             {
                 if ( lstAccount[ index ].username == username )
                 {
@@ -200,11 +200,16 @@ incorrect:
             bool result = int.TryParse( input , out plus );
             if ( result )
             {
+                if ( plus <= 0 )
+                {
+                    Console.WriteLine( "Incorrect input!" );
+                    Deposit();
+                }
                 Console.WriteLine( "Please put the cash in the cash box" );
                 Thread.Sleep( 1000 );
                 Console.WriteLine( "Please wait,validating bill" );
                 Thread.Sleep( 1000 );
-                CurrentUser.balance +=plus;
+                CurrentUser.balance += plus;
                 Console.WriteLine( "Success, now returning..." );
             }
             else
@@ -246,19 +251,19 @@ incorrect:
                 switch ( choice )
                 {
                     case 1:
-                        CurrentUser.balance -=100 ;
+                        CurrentUser.balance -= 100;
                         Withdraw();
                         break;
                     case 2:
-                        CurrentUser.balance -=300 ;
+                        CurrentUser.balance -= 300;
                         Withdraw();
                         break;
                     case 3:
-                        CurrentUser.balance -=500 ;
+                        CurrentUser.balance -= 500;
                         Withdraw();
                         break;
                     case 4:
-                        CurrentUser.balance -=800 ;
+                        CurrentUser.balance -= 800;
                         Withdraw();
                         break;
                     default:
@@ -315,7 +320,7 @@ incorrect:
         static void Transfer()
         {
             Console.WriteLine( "Input the account you wanna transfer:" );
-            string input=Console.ReadLine();
+            string input = Console.ReadLine();
             if ( IsExist( input ) )
             {
                 if ( ToUser.username == CurrentUser.username )
@@ -323,11 +328,17 @@ incorrect:
                     Console.WriteLine( "U cannot transfer money to yourself...!" );
                     MainMenu();
                 }
+incorrect:
                 Console.WriteLine( "Input the money you wanna transfer:" );
                 string input2 = Console.ReadLine();
                 bool result = int.TryParse( input2 , out MoneyCount );
                 if ( result )
                 {
+                    if ( MoneyCount <= 0 )
+                    {
+                        Console.WriteLine( "Incorrect input!" );
+                        goto incorrect;
+                    }
                     Console.WriteLine( "Processing..." );
                     CurrentUser.balance -= MoneyCount;
                     ToUser.balance += MoneyCount;
@@ -338,7 +349,7 @@ incorrect:
                 {
                     Console.WriteLine( "Incorrect input!" );
                     Transfer();
-                } 
+                }
             }
             else
             {
