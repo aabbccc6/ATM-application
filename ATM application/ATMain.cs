@@ -12,8 +12,8 @@ namespace Normal
         static Account ToUser;
         static int ToUserID;
         static List<Account> lstAccount = new List<Account>();
-        static string username;
-        static string password;
+        static string UserName;
+        static string Password;
         static int MoneyCount;
         static void Main( string[] args )
         {
@@ -36,7 +36,7 @@ namespace Normal
         }
         static void ATMain()
         {
-            Console.WriteLine( "Welcome to ATM System Alpha Build v0.15" );
+            Console.WriteLine( "Welcome to ATM System Alpha Build v0.16" );
             Thread.Sleep( 50 );
             Console.WriteLine( "1.Sign in 2.Sign up" );
 incorrect:
@@ -67,9 +67,9 @@ incorrect:
         static void SignIn()
         {
             Console.WriteLine( "Enter your account" );
-            username = Console.ReadLine();
+            UserName = Console.ReadLine();
             Console.WriteLine( "Enter your password" );
-            password = Console.ReadLine();
+            Password = Console.ReadLine();
             Authorize();
         }
         static void Authorize()
@@ -77,7 +77,7 @@ incorrect:
             Console.WriteLine( "Authorizing..." );
             Thread.Sleep( 800 );
             for ( int index = 0 ; index < lstAccount.Count ; index++ )
-                if ( username == lstAccount[ index ].username && password == lstAccount[ index ].password )
+                if ( UserName == lstAccount[ index ].username && Password == lstAccount[ index ].password )
                 {
                     Console.WriteLine( "Authorize confirmed! welcome back, user." );
                     CurrentUser = lstAccount[ index ];
@@ -114,16 +114,15 @@ incorrect:
         }
         static void SignUp()
         {
-alreadyexist:
             Console.WriteLine( "Please input your new account." );
-            string s_username = Console.ReadLine();
-            if ( !IsExist( username ) )
+            string S_UserName = Console.ReadLine();
+            if ( !IsExist( S_UserName ) )
             {
                 Console.WriteLine( "Please input your password." );
-                string s_password = Console.ReadLine();
+                string S_Password = Console.ReadLine();
                 Account a = new Account();
-                a.username = username;
-                a.password = password;
+                a.username = S_UserName;
+                a.password = S_Password;
                 a.balance = 0;
                 Console.WriteLine( "Please wait..." );
                 Thread.Sleep( 500 );
@@ -145,7 +144,7 @@ alreadyexist:
             else
             {
                 Console.WriteLine( "This username is already exist" );
-                goto alreadyexist;
+                SignUp();
             }
         }
         static void MainMenu()
