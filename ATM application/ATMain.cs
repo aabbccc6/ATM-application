@@ -8,13 +8,8 @@ namespace Normal
     class ATM
     {
         static Account CurrentUser;
-        static int CurrentUserID;
-        static Account ToUser;
-        static int ToUserID;
         static List<Account> lstAccount = new List<Account>();
-        static string UserName;
-        static string Password;
-        static int MoneyCount;
+
         static void Main( string[] args )
         {
             AccountInit();
@@ -22,22 +17,15 @@ namespace Normal
         }
         static void AccountInit()
         {
-            Account a1 = new Account();
-            a1.username = "aabbccc6";
-            a1.password = "123";
-            a1.balance = 100;
+            Account a1 = new Account( "aabbccc6" , "123" , 500 );
             lstAccount.Add( a1 );
 
-            Account a2 = new Account();
-            a2.username = "aabbccc7";
-            a2.password = "111";
-            a2.balance = 200;
+            Account a2 = new Account( "aabbccc7" , "111" , 200 );
             lstAccount.Add( a2 );
         }
         static void ATMain()
         {
             Console.WriteLine( "Welcome to ATM System Alpha Build v0.16" );
-            Thread.Sleep( 50 );
             Console.WriteLine( "1.Sign in 2.Sign up" );
 incorrect:
             string input = Console.ReadLine();
@@ -67,78 +55,49 @@ incorrect:
         static void SignIn()
         {
             Console.WriteLine( "Enter your account" );
-            UserName = Console.ReadLine();
+            string username = Console.ReadLine();
             Console.WriteLine( "Enter your password" );
-            Password = Console.ReadLine();
-            Authorize();
+            string password = Console.ReadLine();
+            Authorize( username , password );
         }
-        static void Authorize()
+        static void Authorize( string a , string b )
         {
             Console.WriteLine( "Authorizing..." );
-            Thread.Sleep( 800 );
             for ( int index = 0 ; index < lstAccount.Count ; index++ )
-                if ( UserName == lstAccount[ index ].username && Password == lstAccount[ index ].password )
+                if ( a == lstAccount[ index ].username && b == lstAccount[ index ].password )
                 {
                     Console.WriteLine( "Authorize confirmed! welcome back, user." );
                     CurrentUser = lstAccount[ index ];
-                    CurrentUserID = index;
-                    Thread.Sleep( 50 );
-                    Console.WriteLine();
-                    Thread.Sleep( 50 );
-                    Console.WriteLine();
-                    Thread.Sleep( 50 );
-                    Console.WriteLine();
                     MainMenu();
                 }
             Console.WriteLine( "Invalid account or password." );
-            Console.WriteLine();
-            Thread.Sleep( 50 );
-            Console.WriteLine();
-            Thread.Sleep( 50 );
-            Console.WriteLine();
-            Thread.Sleep( 50 );
             ATMain();
         }
-        static bool IsExist( string username )
+        static Account GetAccount( string username )
         {
+
             for ( int index = 0 ; index < lstAccount.Count ; index++ )
             {
                 if ( lstAccount[ index ].username == username )
                 {
-                    ToUser = lstAccount[ index ];
-                    ToUserID = index;
-                    return true;
+                    return lstAccount[ index ];
+
                 }
             }
-            return false;
+            return null;
         }
         static void SignUp()
         {
             Console.WriteLine( "Please input your new account." );
             string S_UserName = Console.ReadLine();
-            if ( !IsExist( S_UserName ) )
+            if ( GetAccount( S_UserName ) == null )
             {
                 Console.WriteLine( "Please input your password." );
                 string S_Password = Console.ReadLine();
-                Account a = new Account();
-                a.username = S_UserName;
-                a.password = S_Password;
-                a.balance = 0;
+                Account a = new Account( S_UserName , S_Password , 0 );
                 Console.WriteLine( "Please wait..." );
-                Thread.Sleep( 500 );
                 lstAccount.Add( a );
                 Console.WriteLine( "Complete! now returning..." );
-                Thread.Sleep( 50 );
-                Console.WriteLine();
-                Thread.Sleep( 50 );
-                Console.WriteLine();
-                Thread.Sleep( 50 );
-                Console.WriteLine();
-                Thread.Sleep( 50 );
-                Console.WriteLine();
-                Thread.Sleep( 50 );
-                Console.WriteLine();
-                Thread.Sleep( 50 );
                 ATMain();
             }
             else
@@ -149,17 +108,13 @@ incorrect:
         }
         static void MainMenu()
         {
-            Sync();
+            //Sync();
             N_Balance();
             Alarm();
             Console.WriteLine( "Please choose one you wanna do:" );
-            Thread.Sleep( 50 );
             Console.WriteLine( "1.Deposit" );
-            Thread.Sleep( 50 );
             Console.WriteLine( "2.Withdrawal" );
-            Thread.Sleep( 50 );
             Console.WriteLine( "3.Transfer" );
-            Thread.Sleep( 50 );
             Console.WriteLine( "4.Exit" );
 incorrect:
             string input = Console.ReadLine();
@@ -206,41 +161,23 @@ incorrect:
                     Deposit();
                 }
                 Console.WriteLine( "Please put the cash in the cash box" );
-                Thread.Sleep( 1000 );
                 Console.WriteLine( "Please wait,validating bill" );
-                Thread.Sleep( 1000 );
-                CurrentUser.balance += plus;
+                CurrentUser.Deposit( plus );
                 Console.WriteLine( "Success, now returning..." );
             }
             else
             {
                 Console.WriteLine( "incorrect input" );
-                Console.WriteLine();
-                Thread.Sleep( 50 );
-                Console.WriteLine();
-                Thread.Sleep( 50 );
-                Console.WriteLine();
-                Thread.Sleep( 50 );
                 Deposit();
             }
-            Console.WriteLine();
-            Thread.Sleep( 50 );
-            Console.WriteLine();
-            Thread.Sleep( 50 );
-            Console.WriteLine();
-            Thread.Sleep( 50 );
             MainMenu();
         }
         static void Withdrawal()
         {
             Console.WriteLine( "Choose how much you wanna withdraw:" );
-            Thread.Sleep( 50 );
             Console.WriteLine( "1.100" );
-            Thread.Sleep( 50 );
             Console.WriteLine( "2.300" );
-            Thread.Sleep( 50 );
             Console.WriteLine( "3.500" );
-            Thread.Sleep( 50 );
             Console.WriteLine( "4.800" );
 incorrect:
             string input = Console.ReadLine();
@@ -251,19 +188,19 @@ incorrect:
                 switch ( choice )
                 {
                     case 1:
-                        CurrentUser.balance -= 100;
+                        CurrentUser.Withdraw( 100 );
                         Withdraw();
                         break;
                     case 2:
-                        CurrentUser.balance -= 300;
+                        CurrentUser.Withdraw( 300 );
                         Withdraw();
                         break;
                     case 3:
-                        CurrentUser.balance -= 500;
+                        CurrentUser.Withdraw( 500 );
                         Withdraw();
                         break;
                     case 4:
-                        CurrentUser.balance -= 800;
+                        CurrentUser.Withdraw( 800 );
                         Withdraw();
                         break;
                     default:
@@ -280,9 +217,7 @@ incorrect:
         static void Withdraw()
         {
             Console.WriteLine( "Withdraw sequence in progress..." );
-            Thread.Sleep( 2000 );
             Console.WriteLine( "Please take your money" );
-            Thread.Sleep( 1000 );
             Console.WriteLine( "Success, do you want withdraw more money?" );
             Console.WriteLine( "1.Yes 2.No" );
 incorrect:
@@ -298,12 +233,6 @@ incorrect:
                         break;
                     case 2:
                         Console.WriteLine( "Returning..." );
-                        Console.WriteLine();
-                        Thread.Sleep( 50 );
-                        Console.WriteLine();
-                        Thread.Sleep( 50 );
-                        Console.WriteLine();
-                        Thread.Sleep( 50 );
                         MainMenu();
                         break;
                     default:
@@ -321,16 +250,18 @@ incorrect:
         {
             Console.WriteLine( "Input the account you wanna transfer:" );
             string input = Console.ReadLine();
-            if ( IsExist( input ) )
+            Account toUser = GetAccount( input );
+            if ( toUser != null )
             {
-                if ( ToUser.username == CurrentUser.username )
+                if ( toUser.username == CurrentUser.username )
                 {
-                    Console.WriteLine( "U cannot transfer money to yourself...!" );
+                    Console.WriteLine( "You cannot transfer money to yourself!" );
                     MainMenu();
                 }
 incorrect:
                 Console.WriteLine( "Input the money you wanna transfer:" );
                 string input2 = Console.ReadLine();
+                int MoneyCount = 0;
                 bool result = int.TryParse( input2 , out MoneyCount );
                 if ( result )
                 {
@@ -340,9 +271,8 @@ incorrect:
                         goto incorrect;
                     }
                     Console.WriteLine( "Processing..." );
-                    CurrentUser.balance -= MoneyCount;
-                    ToUser.balance += MoneyCount;
-                    Thread.Sleep( 1000 );
+                    CurrentUser.Withdraw( MoneyCount );
+                    toUser.Deposit( MoneyCount );
                     Console.WriteLine( "Success, now returning..." );
                 }
                 else
@@ -356,32 +286,13 @@ incorrect:
                 Console.WriteLine( "account is not exist." );
                 MainMenu();
             }
-            Console.WriteLine();
-            Thread.Sleep( 50 );
-            Console.WriteLine();
-            Thread.Sleep( 50 );
-            Console.WriteLine();
-            Thread.Sleep( 50 );
             MainMenu();
         }
         static void LogOut()
         {
             Console.WriteLine( "Thank you for using!" );
-            Thread.Sleep( 500 );
             Console.Write( "Wiping user data..." );
-            Thread.Sleep( 1000 );
             Console.WriteLine( "done!" );
-            Thread.Sleep( 50 );
-            Console.WriteLine();
-            Thread.Sleep( 50 );
-            Console.WriteLine();
-            Thread.Sleep( 50 );
-            Console.WriteLine();
-            Thread.Sleep( 50 );
-            Console.WriteLine();
-            Thread.Sleep( 50 );
-            Console.WriteLine();
-            Thread.Sleep( 50 );
             ATMain();
         }
         static void N_Balance()
@@ -393,10 +304,15 @@ incorrect:
             if ( CurrentUser.balance < 0 )
                 Console.WriteLine( "Your account balance is lower than 0!!!please return it later." );
         }
-        static void Sync()
-        {
-            lstAccount[ CurrentUserID ] = CurrentUser;
-            lstAccount[ ToUserID ] = ToUser;
-        }
+        //static void Sync()
+        //{
+        //    for ( int index = 0 ; index < lstAccount.Count ; index++ )
+        //    {
+        //        if ( lstAccount[ index ].username == CurrentUser.username )
+        //        {
+        //            lstAccount[ index ] = CurrentUser;
+        //        }
+        //    }
+        //}
     }
 }
