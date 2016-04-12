@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Threading;
 using ATM_account;
-using System.Collections.Generic;
 
 namespace Normal
 {
     class ATM
     {
-        static Account CurrentUser;
-        static List<Account> lstAccount = new List<Account>();
-
         static void Main( string[] args )
         {
             AccountInit();
@@ -18,14 +14,14 @@ namespace Normal
         static void AccountInit()
         {
             Account a1 = new Account( "aabbccc6" , "123" , 500 );
-            lstAccount.Add( a1 );
+            Account.lstAccount.Add( a1 );
 
             Account a2 = new Account( "aabbccc7" , "111" , 200 );
-            lstAccount.Add( a2 );
+            Account.lstAccount.Add( a2 );
         }
         static void ATMain()
         {
-            Console.WriteLine( "Welcome to ATM System Alpha Build v0.16" );
+            Console.WriteLine( "Welcome to ATM System Alpha Build v0.19" );
             Console.WriteLine( "1.Sign in 2.Sign up" );
 incorrect:
             string input = Console.ReadLine();
@@ -58,45 +54,28 @@ incorrect:
             string username = Console.ReadLine();
             Console.WriteLine( "Enter your password" );
             string password = Console.ReadLine();
-            Authorize( username , password );
-        }
-        static void Authorize( string a , string b )
-        {
-            Console.WriteLine( "Authorizing..." );
-            for ( int index = 0 ; index < lstAccount.Count ; index++ )
-                if ( a == lstAccount[ index ].username && b == lstAccount[ index ].password )
-                {
-                    Console.WriteLine( "Authorize confirmed! welcome back, user." );
-                    CurrentUser = lstAccount[ index ];
-                    MainMenu();
-                }
-            Console.WriteLine( "Invalid account or password." );
-            ATMain();
-        }
-        static Account GetAccount( string username )
-        {
-
-            for ( int index = 0 ; index < lstAccount.Count ; index++ )
+            if ( Account.Authorize( username , password ) )
             {
-                if ( lstAccount[ index ].username == username )
-                {
-                    return lstAccount[ index ];
-
-                }
+                MainMenu();
             }
-            return null;
+            else
+            {
+                ATMain();
+            }
         }
+
+
         static void SignUp()
         {
             Console.WriteLine( "Please input your new account." );
             string S_UserName = Console.ReadLine();
-            if ( GetAccount( S_UserName ) == null )
+            if ( Account.GetAccount( S_UserName ) == null )
             {
                 Console.WriteLine( "Please input your password." );
                 string S_Password = Console.ReadLine();
                 Account a = new Account( S_UserName , S_Password , 0 );
                 Console.WriteLine( "Please wait..." );
-                lstAccount.Add( a );
+                Account.lstAccount.Add( a );
                 Console.WriteLine( "Complete! now returning..." );
                 ATMain();
             }
@@ -108,9 +87,7 @@ incorrect:
         }
         static void MainMenu()
         {
-            //Sync();
             N_Balance();
-            Alarm();
             Console.WriteLine( "Please choose one you wanna do:" );
             Console.WriteLine( "1.Deposit" );
             Console.WriteLine( "2.Withdrawal" );
@@ -160,9 +137,14 @@ incorrect:
                     Console.WriteLine( "Incorrect input!" );
                     Deposit();
                 }
+                else if ( plus > 10000 )
+                {
+                    Console.WriteLine( "Can't deposit more than 10k at once!" );
+                    Deposit();
+                }
                 Console.WriteLine( "Please put the cash in the cash box" );
                 Console.WriteLine( "Please wait,validating bill" );
-                CurrentUser.Deposit( plus );
+                Account.CurrentUser.Deposit( plus );
                 Console.WriteLine( "Success, now returning..." );
             }
             else
@@ -188,19 +170,39 @@ incorrect:
                 switch ( choice )
                 {
                     case 1:
-                        CurrentUser.Withdraw( 100 );
+                        if ( 100 > Account.CurrentUser.Balance )
+                        {
+                            Console.WriteLine( "Insufficient balance!" );
+                            MainMenu();
+                        }
+                        Account.CurrentUser.Withdraw( 100 );
                         Withdraw();
                         break;
                     case 2:
-                        CurrentUser.Withdraw( 300 );
+                        if ( 300 > Account.CurrentUser.Balance )
+                        {
+                            Console.WriteLine( "Insufficient balance!" );
+                            MainMenu();
+                        }
+                        Account.CurrentUser.Withdraw( 300 );
                         Withdraw();
                         break;
                     case 3:
-                        CurrentUser.Withdraw( 500 );
+                        if ( 500 > Account.CurrentUser.Balance )
+                        {
+                            Console.WriteLine( "Insufficient balance!" );
+                            MainMenu();
+                        }
+                        Account.CurrentUser.Withdraw( 500 );
                         Withdraw();
                         break;
                     case 4:
-                        CurrentUser.Withdraw( 800 );
+                        if ( 800 > Account.CurrentUser.Balance )
+                        {
+                            Console.WriteLine( "Insufficient balance!" );
+                            MainMenu();
+                        }
+                        Account.CurrentUser.Withdraw( 800 );
                         Withdraw();
                         break;
                     default:
@@ -250,10 +252,10 @@ incorrect:
         {
             Console.WriteLine( "Input the account you wanna transfer:" );
             string input = Console.ReadLine();
-            Account toUser = GetAccount( input );
+            Account toUser = Account.GetAccount( input );
             if ( toUser != null )
             {
-                if ( toUser.username == CurrentUser.username )
+                if ( toUser.username == Account.CurrentUser.username )
                 {
                     Console.WriteLine( "You cannot transfer money to yourself!" );
                     MainMenu();
@@ -270,8 +272,13 @@ incorrect:
                         Console.WriteLine( "Incorrect input!" );
                         goto incorrect;
                     }
+                    else if ( MoneyCount > Account.CurrentUser.Balance )
+                    {
+                        Console.WriteLine( "Insufficient balance!" );
+                        MainMenu();
+                    }
                     Console.WriteLine( "Processing..." );
-                    CurrentUser.Withdraw( MoneyCount );
+                    Account.CurrentUser.Withdraw( MoneyCount );
                     toUser.Deposit( MoneyCount );
                     Console.WriteLine( "Success, now returning..." );
                 }
@@ -297,22 +304,7 @@ incorrect:
         }
         static void N_Balance()
         {
-            Console.WriteLine( "Your account balance is {0}" , CurrentUser.balance );
+            Console.WriteLine( "Your account balance is {0}" , Account.CurrentUser.Balance );
         }
-        static void Alarm()
-        {
-            if ( CurrentUser.balance < 0 )
-                Console.WriteLine( "Your account balance is lower than 0!!!please return it later." );
-        }
-        //static void Sync()
-        //{
-        //    for ( int index = 0 ; index < lstAccount.Count ; index++ )
-        //    {
-        //        if ( lstAccount[ index ].username == CurrentUser.username )
-        //        {
-        //            lstAccount[ index ] = CurrentUser;
-        //        }
-        //    }
-        //}
     }
 }
