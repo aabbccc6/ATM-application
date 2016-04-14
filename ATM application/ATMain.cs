@@ -21,7 +21,7 @@ namespace Normal
         }
         static void ATMain()
         {
-            Console.WriteLine( "Welcome to ATM System Alpha Build v0.19" );
+            Console.WriteLine( "Welcome to ATM System Alpha Build v0.20" );
             Console.WriteLine( "1.Sign in 2.Sign up" );
 incorrect:
             string input = Console.ReadLine();
@@ -63,8 +63,6 @@ incorrect:
                 ATMain();
             }
         }
-
-
         static void SignUp()
         {
             Console.WriteLine( "Please input your new account." );
@@ -126,26 +124,24 @@ incorrect:
         }
         static void Deposit()
         {
-            Console.WriteLine( "How much do you wang to deposit?" );
+            Console.WriteLine( "How much do you want to deposit(can't deposit 10k at once)?" );
             string input = Console.ReadLine();
             int plus = 0;
             bool result = int.TryParse( input , out plus );
             if ( result )
             {
-                if ( plus <= 0 )
+                result = Account.CurrentUser.Save( plus );
+                if ( result )
+                {
+                    Console.WriteLine( "Please put the cash in the cash box" );
+                    Console.WriteLine( "Please wait,validating bill" );
+                    Console.WriteLine( "success, now returning..." );
+                }
+                else
                 {
                     Console.WriteLine( "Incorrect input!" );
                     Deposit();
                 }
-                else if ( plus > 10000 )
-                {
-                    Console.WriteLine( "Can't deposit more than 10k at once!" );
-                    Deposit();
-                }
-                Console.WriteLine( "Please put the cash in the cash box" );
-                Console.WriteLine( "Please wait,validating bill" );
-                Account.CurrentUser.Deposit( plus );
-                Console.WriteLine( "Success, now returning..." );
             }
             else
             {
@@ -170,40 +166,52 @@ incorrect:
                 switch ( choice )
                 {
                     case 1:
-                        if ( 100 > Account.CurrentUser.Balance )
+                        result = Account.CurrentUser.Draw( 100 );
+                        if ( result )
+                        {
+                            Withdraw();
+                        }
+                        else
                         {
                             Console.WriteLine( "Insufficient balance!" );
                             MainMenu();
                         }
-                        Account.CurrentUser.Withdraw( 100 );
-                        Withdraw();
                         break;
                     case 2:
-                        if ( 300 > Account.CurrentUser.Balance )
+                        result = Account.CurrentUser.Draw( 300 );
+                        if ( result )
+                        {
+                            Withdraw();
+                        }
+                        else
                         {
                             Console.WriteLine( "Insufficient balance!" );
                             MainMenu();
                         }
-                        Account.CurrentUser.Withdraw( 300 );
-                        Withdraw();
                         break;
                     case 3:
-                        if ( 500 > Account.CurrentUser.Balance )
+                        result = Account.CurrentUser.Draw( 500 );
+                        if ( result )
+                        {
+                            Withdraw();
+                        }
+                        else
                         {
                             Console.WriteLine( "Insufficient balance!" );
                             MainMenu();
                         }
-                        Account.CurrentUser.Withdraw( 500 );
-                        Withdraw();
                         break;
                     case 4:
-                        if ( 800 > Account.CurrentUser.Balance )
+                        result = Account.CurrentUser.Draw( 800 );
+                        if ( result )
+                        {
+                            Withdraw();
+                        }
+                        else
                         {
                             Console.WriteLine( "Insufficient balance!" );
                             MainMenu();
                         }
-                        Account.CurrentUser.Withdraw( 800 );
-                        Withdraw();
                         break;
                     default:
                         Console.WriteLine( "incorrect input!" );
@@ -267,20 +275,17 @@ incorrect:
                 bool result = int.TryParse( input2 , out MoneyCount );
                 if ( result )
                 {
-                    if ( MoneyCount <= 0 )
+                    result = Account.CurrentUser.Trans( toUser , MoneyCount );
+                    if ( result )
+                    {
+                        Console.WriteLine( "Processing..." );
+                        Console.WriteLine( "Success, now returning..." );
+                    }
+                    else
                     {
                         Console.WriteLine( "Incorrect input!" );
                         goto incorrect;
                     }
-                    else if ( MoneyCount > Account.CurrentUser.Balance )
-                    {
-                        Console.WriteLine( "Insufficient balance!" );
-                        MainMenu();
-                    }
-                    Console.WriteLine( "Processing..." );
-                    Account.CurrentUser.Withdraw( MoneyCount );
-                    toUser.Deposit( MoneyCount );
-                    Console.WriteLine( "Success, now returning..." );
                 }
                 else
                 {

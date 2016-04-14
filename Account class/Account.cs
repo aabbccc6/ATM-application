@@ -20,16 +20,44 @@ namespace ATM_account
             this.username = name;
             this.password = pass;
             this.balance = bal;
-            Console.WriteLine( "profile created" );
             Count++;
         }
-        public void Withdraw( int money )
+        public bool Draw( int money )
         {
-            this.balance -= money;
+            if ( money > this.balance || money < 0 )
+            {
+                return false;
+            }
+            else
+            {
+                this.balance -= money;
+                return true;
+            }
         }
-        public void Deposit( int money )
+        public bool Save( int money )
         {
-            this.balance += money;
+            if ( money >= 10000 || money < 0 )
+            {
+                return false;
+            }
+            else
+            {
+                this.balance += money;
+                return true;
+            }
+        }
+        public bool Trans( Account to , int money )
+        {
+            if ( this.balance >= money && money >= 0 && money < 10000 )
+            {
+                this.balance -= money;
+                to.balance += money;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
         public int Balance
         {
@@ -38,11 +66,11 @@ namespace ATM_account
                 return balance;
             }
         }
-        public static bool Authorize( string a , string b )
+        public static bool Authorize( string username , string password )
         {
             Console.WriteLine( "Authorizing..." );
             for ( int index = 0 ; index < lstAccount.Count ; index++ )
-                if ( a == lstAccount[ index ].username && b == lstAccount[ index ].password )
+                if ( username == lstAccount[ index ].username && password == lstAccount[ index ].password )
                 {
                     Console.WriteLine( "Authorize confirmed! welcome back, user." );
                     CurrentUser = lstAccount[ index ];
